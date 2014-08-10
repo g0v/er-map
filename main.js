@@ -5,6 +5,7 @@
   Map = React.createClass({
     getInitialState: function(){
       return {
+        worker: null,
         map: null,
         markers: []
       };
@@ -38,10 +39,15 @@
   });
   window.init = function(){
     return navigator.geolocation.getCurrentPosition(function(pos){
-      return React.renderComponent(Map({
+      var worker;
+      React.renderComponent(Map({
         latitude: pos.coords.latitude,
         longitude: pos.coords.longitude
       }), document.body);
+      worker = new Worker('worker.js');
+      return worker.onmessage = function(it){
+        return console.log(it.data);
+      };
     });
   };
 }).call(this);

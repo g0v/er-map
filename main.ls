@@ -2,6 +2,7 @@
 
 Map = React.createClass do
   getInitialState: -> do
+    worker: null
     map: null
     markers: []
   getDefaultProps: -> do
@@ -21,6 +22,8 @@ Map = React.createClass do
       .addControl new L.Control.Scale    
     @setState {map: map}
 
-window.init = ->
+window.init = ->          
   pos <- navigator.geolocation.getCurrentPosition
   React.renderComponent Map({latitude:pos.coords.latitude, longitude: pos.coords.longitude}), document.body
+  worker = new Worker \worker.js
+  worker.onmessage = -> console.log it.data
