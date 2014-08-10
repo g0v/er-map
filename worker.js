@@ -17,9 +17,24 @@
     return xhr.send(null);
   };
   fetchData = function(){
+    var result;
+    result = [];
     return getdata(infoEndpoint, function(info){
-      postMessage(info);
-      return setTimeout(fetchData, 50000);
+      return getdata('hosp.json', function(addrmap){
+        var i$, ref$, len$, point, hospital;
+        for (i$ = 0, len$ = (ref$ = info[0].points).length; i$ < len$; ++i$) {
+          point = ref$[i$];
+          if (addrmap[point[3]]) {
+            hospital = addrmap[point[3]];
+            result.push({
+              hospital: hospital,
+              points: point
+            });
+          }
+        }
+        postMessage(result);
+        return setTimeout(fetchData, 50000);
+      });
     });
   };
   fetchData();

@@ -12,8 +12,19 @@ getdata = (url, succes) ->
   xhr.send null
 
 fetch-data = ->
+  result = []
   info <- getdata info-endpoint
-  postMessage info
+  addrmap <- getdata \hosp.json
+  # populate address.
+  for point in info.0.points
+    # matched hostpital which has geocode.
+    if addrmap[point.3]
+      hospital = addrmap[point.3]
+      result.push do
+        hospital: hospital
+        points: point
+
+  postMessage result
   setTimeout fetch-data, 50000
 
 fetch-data!
